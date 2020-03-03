@@ -22,6 +22,7 @@
   "main": "lib/dist/index.js",
   "typings": "lib/dist/index.d.ts",
   "scripts": {
+    "prepare": "npm run build",
     "build": "rm -rf ./lib/dist && tsc",
     "prestart": "npm run build",
     "pretest-js": "npm run build",
