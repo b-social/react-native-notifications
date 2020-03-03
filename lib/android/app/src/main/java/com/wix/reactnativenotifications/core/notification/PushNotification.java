@@ -6,6 +6,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -164,8 +166,18 @@ public class PushNotification implements IPushNotification {
     }
 
     private void setUpIcon(Notification.Builder notification) {
-        int iconResId = getAppResourceId("notification_icon", "drawable");
-        if (iconResId != 0) {
+        int firebaseResId = 0;
+        try {
+            ApplicationInfo app = mContext.getPackageManager().getApplicationInfo(mContext.getPackageName(), PackageManager.GET_META_DATA);
+            firebaseResId = app.metaData.getInt("com.google.firebase.messaging.default_notification_icon");
+        } catch (PackageManager.NameNotFoundException ignored) {
+        }
+
+        final int iconResId = getAppResourceId("ic_notification", "drawable");
+
+        if (firebaseResId != 0) {
+            notification.setSmallIcon(firebaseResId);
+        } else if (iconResId != 0) {
             notification.setSmallIcon(iconResId);
         } else {
             notification.setSmallIcon(mContext.getApplicationInfo().icon);
@@ -175,10 +187,23 @@ public class PushNotification implements IPushNotification {
     }
 
     private void setUpIconColor(Notification.Builder notification) {
-        int colorResID = getAppResourceId("colorAccent", "color");
-        if (colorResID != 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int color = mContext.getResources().getColor(colorResID);
-            notification.setColor(color);
+        int firebaseResId = 0;
+        try {
+            ApplicationInfo app = mContext.getPackageManager().getApplicationInfo(mContext.getPackageName(), PackageManager.GET_META_DATA);
+            firebaseResId = app.metaData.getInt("com.google.firebase.messaging.default_notification_color");
+        } catch (PackageManager.NameNotFoundException ignored) {
+        }
+
+        final int colorResID = getAppResourceId("colorAccent", "color");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (firebaseResId != 0) {
+                int color = mContext.getResources().getColor(firebaseResId);
+                notification.setColor(color);
+            } else if (colorResID != 0) {
+                int color = mContext.getResources().getColor(colorResID);
+                notification.setColor(color);
+            }
         }
     }
 
