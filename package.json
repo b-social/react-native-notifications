@@ -22,7 +22,6 @@
   "main": "lib/dist/index.js",
   "typings": "lib/dist/index.d.ts",
   "scripts": {
-    "prepare": "npm run build",
     "postinstall": "npm install && npm run build && rm -rf ./node_modules",
     "build": "rm -rf ./lib/dist && tsc",
     "prestart": "npm run build",
