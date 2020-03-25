@@ -22,7 +22,9 @@
   "main": "lib/dist/index.js",
   "typings": "lib/dist/index.d.ts",
   "scripts": {
-    "postinstall": "npm install && npm run build && rm -rf ./node_modules",
+    "preinstall": "npm install --ignore-scripts",
+    "install": "rm -rf ./lib/dist && tsc",
+    "postinstall": "rm -rf ./node_modules",
     "build": "rm -rf ./lib/dist && tsc",
     "prestart": "npm run build",
     "pretest-js": "npm run build",
